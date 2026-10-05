@@ -270,10 +270,15 @@ form.addEventListener("submit", async (e) => {
     return;
   }
   // Nothing configured yet: copy the request so it can be pasted into a DM.
-  try { await navigator.clipboard.writeText(text); } catch { /* clipboard blocked */ }
+  let copied = false;
+  try { await navigator.clipboard.writeText(text); copied = true; } catch { /* clipboard blocked */ }
   const ig = BUSINESS.socials.find((s) => s.label === "Instagram");
-  note.innerHTML = `Your request is copied — paste it in a DM to ${ig ? `<a href="${ig.url}" target="_blank" rel="noopener">${esc(ig.handle)}</a>` : "us"} and we’ll confirm.`;
+  const dm = ig ? `<a href="${ig.url}" target="_blank" rel="noopener">${esc(ig.handle)}</a>` : "us";
+  note.innerHTML = copied
+    ? `Your request is copied. Paste it in a DM to ${dm} and we’ll confirm.`
+    : `Copy your request below and send it in a DM to ${dm}.<textarea readonly rows="8" class="copy-box">${esc(text)}</textarea>`;
   note.classList.add("ok");
+  note.querySelector(".copy-box")?.select();
 });
 
 // ── Socials & footer ─────────────────────────────

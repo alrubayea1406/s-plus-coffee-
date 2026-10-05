@@ -294,3 +294,4 @@ input[type="range"] { padding: 0; border: 0; background: none; accent-color: var
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   html { scroll-behavior: auto; }
 }
+.copy-box { display: block; margin-top: 10px; font: .85rem/1.5 var(--body); text-align: left; color: var(--ink); resize: vertical; }
