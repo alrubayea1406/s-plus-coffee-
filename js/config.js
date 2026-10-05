@@ -58,7 +58,7 @@ export const SIGNATURE = [
     size: "16 oz",
     serve: "Iced only",
     accent: "#e08a3c",
-    image: "assets/img/orangello.webp", w: 787, h: 1056,
+    image: "assets/img/orangello.webp", w: 757, h: 1056,
     alt: "Iced Orangello layered espresso and orange juice with a dried orange slice and fresh oranges",
     ingredients: [
       ["2 shots", "Espresso", ""],
@@ -76,7 +76,7 @@ export const SIGNATURE = [
     size: "16 oz",
     serve: "Iced or hot",
     accent: "#9db36a",
-    image: "assets/img/tokyo-matcha.webp", w: 787, h: 1044,
+    image: "assets/img/tokyo-matcha.webp", w: 757, h: 1044,
     alt: "Tokyo Matcha with coconut cream, cocoa and cardamom pods on top",
     ingredients: [
       ["2–2.5 g", "Premium matcha", "Vibrant and smooth"],
@@ -95,7 +95,7 @@ export const SIGNATURE = [
     size: "16 oz",
     serve: "Iced or hot",
     accent: "#c4733a",
-    image: "assets/img/sabah-tea.webp", w: 773, h: 975,
+    image: "assets/img/sabah-tea.webp", w: 742, h: 975,
     alt: "Sabah Tea over ice with cinnamon sticks and cardamom pods",
     ingredients: [
       ["8 oz", "Black tea", "Robust and aromatic"],
