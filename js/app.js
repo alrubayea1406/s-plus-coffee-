@@ -1,4 +1,4 @@
-import { BUSINESS, PACKAGES, MENU, EXTRAS } from "./config.js";
+import { BUSINESS, MENU, EXTRAS } from "./config.js";
 
 const $ = (s, el = document) => el.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -131,31 +131,12 @@ $("#drinkBook").addEventListener("click", () => {
   $("#book").scrollIntoView({ behavior: "smooth" });
 });
 
-// ── Packages ─────────────────────────────────────
-$("#packages").innerHTML = PACKAGES.map((p) => `
-  <article class="package${p.featured ? " featured" : ""}">
-    ${p.featured ? `<span class="ribbon">Most booked</span>` : ""}
-    <h3>${esc(p.name)}</h3>
-    <p class="guests">${esc(p.guests)}</p>
-    <p>${esc(p.blurb)}</p>
-    <ul>${p.perks.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>
-    <a class="btn ${p.featured ? "" : "btn-ghost"}" href="#book" data-pkg="${p.id}">Request this</a>
-  </article>`).join("");
-$("#packages").addEventListener("click", (e) => {
-  const a = e.target.closest("[data-pkg]");
-  if (!a) return;
-  const r = document.querySelector(`#packageChips input[value="${a.dataset.pkg}"]`);
-  if (r) r.checked = true;
-  updateTicket();
-});
-
 // ── Booking form ─────────────────────────────────
 const chip = (type, name, value, label, checked = false) =>
   `<label class="chip"><input type="${type}" name="${name}" value="${esc(value)}"${checked ? " checked" : ""}><span>${esc(label)}</span></label>`;
 
 const EVENT_TYPES = ["Wedding", "Birthday", "Corporate", "Graduation", "School / Campus", "Festival", "Private party", "Other"];
 $("#eventTypes").innerHTML = EVENT_TYPES.map((t) => chip("radio", "type", t, t)).join("");
-$("#packageChips").innerHTML = PACKAGES.map((p) => chip("radio", "package", p.id, p.name)).join("") + chip("radio", "package", "unsure", "Not sure yet", true);
 $("#drinkChips").innerHTML = MENU.flatMap((c) => c.items).map((i) => chip("checkbox", "drinks", i.name, i.name)).join("");
 
 const form = $("#bookForm");
@@ -167,12 +148,10 @@ const guestLabel = () => (guests.value >= 500 ? "500+" : guests.value);
 
 function formData() {
   const f = form.elements;
-  const pkg = PACKAGES.find((p) => p.id === f.package.value);
   return {
     name: f.name.value.trim(), phone: f.phone.value.trim(), email: f.email.value.trim(),
     type: f.type.value, date: f.date.value, time: f.time.value, hours: f.hours.value,
     guests: guestLabel(), location: f.location.value.trim(),
-    package: pkg ? pkg.name : "Not sure yet",
     drinks: [...form.querySelectorAll('input[name="drinks"]:checked')].map((i) => i.value),
     notes: f.notes.value.trim(),
   };
@@ -189,7 +168,6 @@ function updateTicket() {
   set("type", d.type || "—");
   set("date", d.date ? prettyDate(d.date) + (d.time ? ` · ${d.time}` : "") : "—");
   set("guests", d.guests);
-  set("package", d.package);
   $('#ticket [data-t="cups"]').innerHTML = d.drinks.map((x) => `<span>${esc(x)}</span>`).join("");
 }
 form.addEventListener("input", updateTicket);
@@ -217,7 +195,6 @@ function message(d) {
     `Hours of service: ${d.hours}`,
     `Guests: ${d.guests}`,
     `Location: ${d.location}`,
-    `Package: ${d.package}`,
     d.drinks.length && `Drinks: ${d.drinks.join(", ")}`,
     d.notes && `Notes: ${d.notes}`,
   ].filter(Boolean).join("\n");

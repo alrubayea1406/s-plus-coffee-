@@ -1,6 +1,6 @@
 # S+ Coffee — website
 
-A one-page site for the S+ Coffee truck: an interactive 3D truck, the full menu with a 3D drink viewer, event packages, and an event booking form.
+A one-page site for the S+ Coffee truck: an interactive 3D truck, the full menu with a 3D drink viewer, and an event booking form.
 
 No build step — it's plain HTML/CSS/JS with [three.js](https://threejs.org) bundled in `vendor/`.
 
@@ -22,7 +22,6 @@ Everything lives in **`js/config.js`**:
 | City, phone, email | `BUSINESS` |
 | Where booking requests go | `BUSINESS.formEndpoint` → `whatsapp` → `email` (first one filled in wins) |
 | Social links | `BUSINESS.socials` |
-| Event packages | `PACKAGES` |
 | Menu, prices, drink colors | `MENU` (`price: ""` hides the price; `layers` paint the 3D cup) |
 
 ### Receiving booking requests

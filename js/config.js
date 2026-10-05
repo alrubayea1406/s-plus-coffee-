@@ -1,7 +1,7 @@
 // ─────────────────────────────────────────────────────────────
 //  S+ Coffee — site content
 //  Everything the owner may want to change lives in this file:
-//  contact info, social links, event packages and the full menu.
+//  contact info, social links and the full menu.
 // ─────────────────────────────────────────────────────────────
 
 export const BUSINESS = {
@@ -25,31 +25,6 @@ export const BUSINESS = {
     // { label: "Snapchat", handle: "spluscoffee", url: "https://snapchat.com/add/spluscoffee" },
   ],
 };
-
-export const PACKAGES = [
-  {
-    id: "gathering",
-    name: "Gathering",
-    guests: "Up to 50 guests",
-    blurb: "Birthdays, graduations, family nights and small parties.",
-    perks: ["2 hours of service", "Choose 5 menu drinks", "One barista"],
-  },
-  {
-    id: "corporate",
-    name: "Office & Corporate",
-    guests: "50 – 150 guests",
-    blurb: "Team mornings, launches, conferences and client days.",
-    perks: ["3 hours of service", "Full menu", "Custom cup sleeves with your logo"],
-    featured: true,
-  },
-  {
-    id: "celebration",
-    name: "Weddings & Big Events",
-    guests: "150+ guests",
-    blurb: "Weddings, engagements, festivals and community events.",
-    perks: ["4+ hours of service", "Signature drink named for you", "Two baristas"],
-  },
-];
 
 // Each drink's `layers` paint the 3D cup, bottom → top.
 // h is the share of the cup height (they don't need to add up to 1 — the rest stays empty).

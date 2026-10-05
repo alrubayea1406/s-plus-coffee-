@@ -7,7 +7,7 @@
   <meta name="description" content="S+ Coffee is a specialty coffee truck. See the full menu, find us, and book the truck for your next event.">
   <meta name="theme-color" content="#1b0f09">
   <meta property="og:title" content="S+ Coffee — Specialty Coffee Truck">
-  <meta property="og:description" content="Full menu, events and bookings for the S+ Coffee truck.">
+  <meta property="og:description" content="Full menu and event bookings for the S+ Coffee truck.">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,7 +24,6 @@
     </a>
     <nav class="nav-links" id="navLinks">
       <a href="#menu">Menu</a>
-      <a href="#events">Events</a>
       <a href="#find">Find us</a>
       <a class="btn btn-small" href="#book">Book the truck</a>
     </nav>
@@ -64,20 +63,6 @@
       <p class="extras" id="extras"></p>
     </section>
 
-    <!-- EVENTS -->
-    <section class="section section-dark" id="events">
-      <div class="section-head">
-        <p class="eyebrow">Events &amp; catering</p>
-        <h2>Bring the truck <em>to your party.</em></h2>
-        <p class="section-sub">We park, set up, and serve fresh drinks to every guest. You pick the menu — we handle the rest.</p>
-      </div>
-      <div class="packages" id="packages"></div>
-      <ol class="steps">
-        <li><b>1</b><span>Send a request below</span></li>
-        <li><b>2</b><span>We confirm date &amp; quote</span></li>
-        <li><b>3</b><span>The truck shows up — coffee for everyone</span></li>
-      </ol>
-    </section>
 
     <!-- BOOKING -->
     <section class="section" id="book">
@@ -85,14 +70,13 @@
         <div class="book-intro">
           <p class="eyebrow">Book the truck</p>
           <h2>Tell us about <em>your event.</em></h2>
-          <p class="section-sub">Fill this in and we’ll get back to you with availability and a quote. No payment needed to ask.</p>
+          <p class="section-sub">Want the truck at your wedding, party or office? Answer a few questions and we’ll get back to you with availability and a quote. No payment needed to ask.</p>
           <div class="ticket" id="ticket" aria-live="polite">
             <div class="ticket-top"><span class="brand-mark">S<sup>+</sup></span> Event ticket</div>
             <dl>
               <dt>Event</dt><dd data-t="type">—</dd>
               <dt>Date</dt><dd data-t="date">—</dd>
               <dt>Guests</dt><dd data-t="guests">—</dd>
-              <dt>Package</dt><dd data-t="package">—</dd>
             </dl>
             <div class="ticket-cups" data-t="cups"></div>
           </div>
@@ -124,10 +108,6 @@
           </div>
           <label class="field"><span>Event location / address *</span><input name="location" required placeholder="Venue, street or neighborhood"></label>
 
-          <fieldset class="field">
-            <legend>Package</legend>
-            <div class="chips" id="packageChips"></div>
-          </fieldset>
 
           <fieldset class="field">
             <legend>Drinks you’d like served <small>(optional)</small></legend>
