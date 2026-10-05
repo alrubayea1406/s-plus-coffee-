@@ -5,6 +5,17 @@
 //  posts (main menu, Fall Menu and the four specialty drink posts).
 // ─────────────────────────────────────────────────────────────
 
+// Social / contact links. Leave a value empty ("") to hide its icon.
+// TODO: fill in the real LinkedIn, TikTok and Facebook URLs and the contact email when available.
+export const SOCIAL_LINKS = {
+  instagram: "https://www.instagram.com/spluscoffee.nc/",
+  linkedin: "", // TODO e.g. "https://www.linkedin.com/company/..."
+  tiktok: "", // TODO e.g. "https://www.tiktok.com/@..."
+  facebook: "", // TODO e.g. "https://www.facebook.com/..."
+  email: "", // TODO plain address, e.g. "hello@example.com" (becomes a mailto: link)
+  linktree: "https://linktr.ee/spluscoffee",
+};
+
 export const BUSINESS = {
   name: "S+ Plus Coffee",
   tagline: "Specialty Coffee · Good Vibes",
@@ -19,13 +30,9 @@ export const BUSINESS = {
   //   3. email        — opens the visitor's mail app with the request pre-filled
   formEndpoint: "",
   whatsapp: "",
-  email: "",
+  email: SOCIAL_LINKS.email,
   phone: "", // display only, e.g. "(919) 555-1234"
-
-  socials: [
-    { label: "Instagram", handle: "@spluscoffee.nc", url: "https://www.instagram.com/spluscoffee.nc/" },
-    { label: "Linktree", handle: "linktr.ee/spluscoffee", url: "https://linktr.ee/spluscoffee" },
-  ],
+  instagramHandle: "@spluscoffee.nc",
 };
 
 // ── Signature / specialty drinks (from the S+ drink posts) ──

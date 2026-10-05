@@ -1,4 +1,4 @@
-import { BUSINESS, SIGNATURE, SEASONAL, MENU, FLAVORS, MENU_NOTE, BOOKING_DRINKS } from "./config.js";
+import { BUSINESS, SOCIAL_LINKS, SIGNATURE, SEASONAL, MENU, FLAVORS, MENU_NOTE, BOOKING_DRINKS } from "./config.js";
 
 const $ = (s, el = document) => el.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -245,8 +245,7 @@ form.addEventListener("submit", async (e) => {
   // Nothing configured yet: copy the request so it can be pasted into a DM.
   let copied = false;
   try { await navigator.clipboard.writeText(text); copied = true; } catch { /* clipboard blocked */ }
-  const ig = BUSINESS.socials.find((s) => s.label === "Instagram");
-  const dm = ig ? `<a href="${ig.url}" target="_blank" rel="noopener">${esc(ig.handle)}</a>` : "us";
+  const dm = SOCIAL_LINKS.instagram ? `<a href="${esc(SOCIAL_LINKS.instagram)}" target="_blank" rel="noopener">${esc(BUSINESS.instagramHandle)}</a>` : "us";
   note.innerHTML = copied
     ? `Your request is copied. Paste it in a DM to ${dm} and we’ll confirm.`
     : `Copy your request below and send it in a DM to ${dm}.<textarea readonly rows="8" class="copy-box">${esc(text)}</textarea>`;
@@ -255,24 +254,29 @@ form.addEventListener("submit", async (e) => {
 });
 
 // ── Location, socials & footer ───────────────────
+// Outline icons, one stroke style (24px grid)
 const ICONS = {
-  Instagram: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6"/></svg>',
-  Linktree: '<svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M12 3v18M5 7l7 5 7-5M6 15h12"/></svg>',
-  default: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>',
+  instagram: '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="3.8"/><circle cx="17.2" cy="6.8" r=".5"/>',
+  linkedin: '<rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 10.5V16M8 7.8v.1M11.5 16v-5.5M11.5 13c0-1.6 1-2.6 2.3-2.6s2.2.9 2.2 2.6V16"/>',
+  tiktok: '<path d="M13.5 4v10.2a3.3 3.3 0 1 1-3.3-3.3"/><path d="M13.5 4c.3 2.3 1.9 3.9 4.5 4.1"/>',
+  facebook: '<circle cx="12" cy="12" r="8.5"/><path d="M13.6 8.2h-1.1a2 2 0 0 0-2 2v10.2M8.9 13h4.6"/>',
+  email: '<rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4 7 8 6 8-6"/>',
+  linktree: '<path d="M12 3.5v17M5.5 7.5 12 12l6.5-4.5M6.5 15h11"/>',
 };
+const SOCIAL_LABELS = { instagram: "Instagram", linkedin: "LinkedIn", tiktok: "TikTok", facebook: "Facebook", email: "Email", linktree: "Linktree" };
+const socialHref = (k, v) => (k === "email" ? `mailto:${v}` : v);
+const SocialIcons = () => Object.entries(SOCIAL_LINKS)
+  .filter(([, v]) => v) // empty = not set up yet, keep hidden
+  .map(([k, v]) => `<a class="social-icon" href="${esc(socialHref(k, v))}"${k === "email" ? "" : ' target="_blank" rel="noopener"'} aria-label="${SOCIAL_LABELS[k]}" title="${SOCIAL_LABELS[k]}">
+      <svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[k]}</svg></a>`).join("");
+
 $("#addrStreet").textContent = BUSINESS.street + ",";
 $("#addrCity").textContent = BUSINESS.cityLine;
 $("#addrCountry").textContent = BUSINESS.country;
 $("#directionsBtn").href = BUSINESS.directionsUrl;
-const ig = BUSINESS.socials.find((s) => s.label === "Instagram");
-if (ig) $("#followBtn").href = ig.url; else $("#followBtn").remove();
-const contacts = [
-  ...BUSINESS.socials,
-  BUSINESS.phone && { label: "Call or text", handle: BUSINESS.phone, url: `tel:${BUSINESS.phone.replace(/[^\d+]/g, "")}` },
-  BUSINESS.email && { label: "Email", handle: BUSINESS.email, url: `mailto:${BUSINESS.email}` },
-].filter(Boolean);
-$("#socials").innerHTML = contacts.map((s) =>
-  `<a href="${esc(s.url)}" target="_blank" rel="noopener">${ICONS[s.label] || ICONS.default}<span>${esc(s.handle)}</span></a>`).join("");
+document.querySelectorAll(".social-row").forEach((el) => (el.innerHTML = SocialIcons()));
+if (SOCIAL_LINKS.instagram) $("#igHandle").href = SOCIAL_LINKS.instagram;
+$("#igHandle").textContent = BUSINESS.instagramHandle;
 $("#footerAddr").textContent = `${BUSINESS.street}, ${BUSINESS.cityLine}`;
 $("#year").textContent = new Date().getFullYear();
 

@@ -47,9 +47,14 @@
         </div>
       </div>
       <figure class="hero-media">
-        <img src="assets/img/trailer.webp" width="1309" height="754" fetchpriority="high" decoding="async"
-             alt="The white S+ Plus Coffee trailer with its serving window open, string lights, an espresso machine and a chalkboard menu">
-        <figcaption>The S+ trailer at 1018 W Main St</figcaption>
+        <div class="hero-frame">
+          <img src="assets/img/trailer.webp" width="1309" height="754" fetchpriority="high" decoding="async"
+               alt="The white S+ Plus Coffee trailer with its serving window open, string lights, an espresso machine and a chalkboard menu">
+        </div>
+        <figcaption class="hero-badge">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s6.5-5.8 6.5-11a6.5 6.5 0 1 0-13 0c0 5.2 6.5 11 6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>
+          <span><b>The S+ trailer</b>1018 W Main St · Durham, NC</span>
+        </figcaption>
       </figure>
     </section>
 
@@ -109,7 +114,7 @@
 
     <!-- LOCATION -->
     <section class="section location" id="location">
-      <p class="eyebrow">Find the trailer</p>
+      <p class="eyebrow">Find us</p>
       <div class="address-block">
         <svg class="pin" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg>
         <address>
@@ -118,13 +123,11 @@
           <span class="addr-country" id="addrCountry"></span>
         </address>
       </div>
-      <p class="see-you">See you soon <span aria-hidden="true">♡</span></p>
       <div class="cta-row cta-center">
         <a class="btn btn-gold" id="directionsBtn" href="#" target="_blank" rel="noopener">Get directions</a>
-        <a class="btn btn-line" id="followBtn" href="#" target="_blank" rel="noopener">Follow S+ Coffee</a>
       </div>
-      <p class="location-note">Check our Instagram for hours and updates.</p>
-      <div class="socials" id="socials"></div>
+      <div class="social-row" aria-label="S+ Plus Coffee on social media"></div>
+      <p class="location-note">Follow <a id="igHandle" href="#" target="_blank" rel="noopener"></a> for hours and updates. See you soon <span aria-hidden="true">♡</span></p>
     </section>
 
     <!-- CONTACT / EVENT BOOKING -->
@@ -191,6 +194,7 @@
       <span class="logo-words" aria-hidden="true"><span class="logo-plusword">Plus</span><span class="logo-coffee">Coffee</span></span>
     </a>
     <p id="footerAddr"></p>
+    <div class="social-row social-row-sm" aria-label="S+ Plus Coffee on social media"></div>
     <p>© <span id="year"></span> S+ Plus Coffee</p>
   </footer>
 
