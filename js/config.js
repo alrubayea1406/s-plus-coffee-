@@ -25,9 +25,12 @@ export const BUSINESS = {
   directionsUrl: "https://www.google.com/maps/dir/?api=1&destination=1018+W+Main+St,+Durham,+NC+27701",
 
   // Event booking requests are delivered using the first option that is filled in:
+  //   0. netlifyForms — when the site is hosted on Netlify, requests are saved under
+  //      Netlify → Forms and emailed via Forms → Form notifications (fallback: email below)
   //   1. formEndpoint — a Formspree / Getform URL (works without opening an app)
   //   2. whatsapp     — international number, digits only, e.g. "19195551234"
   //   3. email        — opens the visitor's mail app with the request pre-filled
+  netlifyForms: true,
   formEndpoint: "",
   whatsapp: "",
   email: SOCIAL_LINKS.email,

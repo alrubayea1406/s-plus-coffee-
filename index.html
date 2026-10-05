@@ -150,7 +150,14 @@
           </div>
         </div>
 
-        <form class="book-form" id="bookForm" novalidate>
+        <form class="book-form" id="bookForm" name="event-booking" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" novalidate>
+          <!-- Netlify Forms: these hidden fields are filled in by js/app.js -->
+          <input type="hidden" name="form-name" value="event-booking">
+          <input type="hidden" name="subject" value="New event booking request">
+          <input type="hidden" name="event_type">
+          <input type="hidden" name="drinks_requested">
+          <input type="hidden" name="summary">
+          <p hidden><label>Leave this empty: <input name="bot-field"></label></p>
           <div class="field-row">
             <label class="field"><span>Your name *</span><input id="f-name" name="name" required autocomplete="name"></label>
             <label class="field"><span>Phone *</span><input id="f-phone" name="phone" type="tel" required autocomplete="tel"></label>
