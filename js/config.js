@@ -25,11 +25,14 @@ export const BUSINESS = {
   directionsUrl: "https://www.google.com/maps/dir/?api=1&destination=1018+W+Main+St,+Durham,+NC+27701",
 
   // Event booking requests are delivered using the first option that is filled in:
+  //   0. web3formsKey — free Web3Forms access key (get one at web3forms.com with the
+  //      shop's email; the key is meant to live in front-end code). Emails every request.
   //   1. formEndpoint — a form-to-email service URL (works without opening an app).
   //      Uses FormSubmit (free): the first request sends an "Activate Form" email to
   //      the address below, which must be confirmed once.
   //   2. whatsapp     — international number, digits only, e.g. "19195551234"
   //   3. email        — opens the visitor's mail app with the request pre-filled
+  web3formsKey: "", // TODO: paste the Web3Forms access key here
   formEndpoint: "https://formsubmit.co/ajax/spluscoffee2026@gmail.com",
   whatsapp: "",
   email: SOCIAL_LINKS.email,

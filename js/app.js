@@ -210,18 +210,25 @@ form.addEventListener("submit", async (e) => {
   const text = message(d);
   const btn = $("#submitBtn");
 
-  if (BUSINESS.formEndpoint) {
+  // Form-to-email services: Web3Forms when a key is set, otherwise FormSubmit.
+  const subject = `Event booking: ${d.type} on ${prettyDate(d.date)} (${d.name})`;
+  const fields = {
+    name: d.name, phone: d.phone, email: d.email, event: d.type, date: prettyDate(d.date), time: d.time,
+    hours: d.hours, guests: d.guests, location: d.location, drinks: d.drinks.join(", "), notes: d.notes,
+  };
+  const service = BUSINESS.web3formsKey
+    ? { url: "https://api.web3forms.com/submit", body: { access_key: BUSINESS.web3formsKey, subject, from_name: "S+ Coffee website", botcheck: form.elements._honey.value, ...fields } }
+    : BUSINESS.formEndpoint
+      ? { url: BUSINESS.formEndpoint, body: { _subject: subject, _template: "table", _captcha: "false", _honey: form.elements._honey.value, ...fields } }
+      : null;
+
+  if (service) {
     btn.disabled = true; btn.textContent = "Sending…";
     try {
-      const res = await fetch(BUSINESS.formEndpoint, {
+      const res = await fetch(service.url, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          _subject: `Event booking: ${d.type} on ${prettyDate(d.date)} (${d.name})`,
-          _template: "table", _captcha: "false", _honey: form.elements._honey.value,
-          name: d.name, phone: d.phone, email: d.email, event: d.type, date: prettyDate(d.date), time: d.time,
-          hours: d.hours, guests: d.guests, location: d.location, drinks: d.drinks.join(", "), notes: d.notes,
-        }),
+        body: JSON.stringify(service.body),
       });
       const out = await res.json().catch(() => ({}));
       if (!res.ok || String(out.success) === "false") throw new Error(out.message || res.status);
