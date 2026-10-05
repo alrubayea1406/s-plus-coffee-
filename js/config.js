@@ -32,7 +32,7 @@ export const BUSINESS = {
   //      the address below, which must be confirmed once.
   //   2. whatsapp     — international number, digits only, e.g. "19195551234"
   //   3. email        — opens the visitor's mail app with the request pre-filled
-  web3formsKey: "", // TODO: paste the Web3Forms access key here
+  web3formsKey: "177b5cb2-992d-42dd-90aa-5e0c1052c949",
   formEndpoint: "https://formsubmit.co/ajax/spluscoffee2026@gmail.com",
   whatsapp: "",
   email: SOCIAL_LINKS.email,
