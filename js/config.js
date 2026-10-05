@@ -10,7 +10,7 @@
 export const SOCIAL_LINKS = {
   instagram: "https://www.instagram.com/spluscoffee.nc/",
   linkedin: "", // TODO e.g. "https://www.linkedin.com/company/..."
-  tiktok: "", // TODO e.g. "https://www.tiktok.com/@..."
+  tiktok: "https://www.tiktok.com/@spluscoffee.nc",
   facebook: "", // TODO e.g. "https://www.facebook.com/..."
   email: "", // TODO plain address, e.g. "hello@example.com" (becomes a mailto: link)
   linktree: "https://linktr.ee/spluscoffee",
