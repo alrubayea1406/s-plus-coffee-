@@ -210,42 +210,23 @@ form.addEventListener("submit", async (e) => {
   const text = message(d);
   const btn = $("#submitBtn");
 
-  // Netlify Forms: posts to the page itself; Netlify stores it and emails the shop.
-  if (BUSINESS.netlifyForms) {
-    btn.disabled = true; btn.textContent = "Sending…";
-    const subject = `Event booking: ${d.type} on ${prettyDate(d.date)} (${d.name})`;
-    const body = new URLSearchParams({
-      "form-name": "event-booking", subject, "bot-field": form.elements["bot-field"].value,
-      name: d.name, phone: d.phone, email: d.email, event_type: d.type, date: d.date, time: d.time,
-      hours: d.hours, guests: d.guests, location: d.location, drinks_requested: d.drinks.join(", "),
-      notes: d.notes, summary: text,
-    });
-    let sent = false;
-    try {
-      const res = await fetch("/", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body });
-      sent = res.ok;
-    } catch { /* offline or not hosted on Netlify */ }
-    btn.disabled = false; btn.textContent = "Send booking request";
-    if (sent) {
-      form.reset(); updateTicket();
-      note.textContent = "Request sent! We’ll email or call you back shortly.";
-      note.classList.add("ok");
-      return;
-    }
-    // Not on Netlify (local preview) or the request failed: fall through to the email app.
-  }
-
   if (BUSINESS.formEndpoint) {
     btn.disabled = true; btn.textContent = "Sending…";
     try {
       const res = await fetch(BUSINESS.formEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ ...d, drinks: d.drinks.join(", "), _subject: `Event booking: ${d.type} on ${d.date}`, message: text }),
+        body: JSON.stringify({
+          _subject: `Event booking: ${d.type} on ${prettyDate(d.date)} (${d.name})`,
+          _template: "table", _captcha: "false", _honey: form.elements._honey.value,
+          name: d.name, phone: d.phone, email: d.email, event: d.type, date: prettyDate(d.date), time: d.time,
+          hours: d.hours, guests: d.guests, location: d.location, drinks: d.drinks.join(", "), notes: d.notes,
+        }),
       });
-      if (!res.ok) throw new Error(res.status);
+      const out = await res.json().catch(() => ({}));
+      if (!res.ok || String(out.success) === "false") throw new Error(out.message || res.status);
       form.reset(); updateTicket();
-      note.textContent = "Request sent. We’ll get back to you shortly.";
+      note.textContent = "Request sent! We’ll email or call you back shortly.";
       note.classList.add("ok");
     } catch {
       note.textContent = "That didn’t go through. Please try again, or message us on Instagram.";
