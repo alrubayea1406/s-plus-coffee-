@@ -1,4 +1,4 @@
-import { BUSINESS, SOCIAL_LINKS, SIGNATURE, SEASONAL, MENU, FLAVORS, MENU_NOTE, BOOKING_DRINKS } from "./config.js";
+import { BUSINESS, SOCIAL_LINKS, SIGNATURE, SEASONAL, MENU, FLAVORS, MENU_NOTE, BOOKING_DRINKS } from "./config.js?v=202610052148";
 
 const $ = (s, el = document) => el.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -226,7 +226,7 @@ form.addEventListener("submit", async (e) => {
       const out = await res.json().catch(() => ({}));
       if (!res.ok || String(out.success) === "false") throw new Error(out.message || res.status);
       form.reset(); updateTicket();
-      note.textContent = "Request sent! We’ll email or call you back shortly.";
+      note.textContent = "Thanks! Your request was emailed to S+ Coffee. We’ll get back to you soon.";
       note.classList.add("ok");
     } catch {
       note.textContent = "That didn’t go through. Please try again, or message us on Instagram.";
