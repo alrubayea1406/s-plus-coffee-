@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>S+ Coffee — Specialty Coffee Truck</title>
+  <meta name="description" content="S+ Coffee is a specialty coffee truck. See the full menu, find us, and book the truck for your next event.">
+  <meta name="theme-color" content="#1b0f09">
+  <meta property="og:title" content="S+ Coffee — Specialty Coffee Truck">
+  <meta property="og:description" content="Full menu, events and bookings for the S+ Coffee truck.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="importmap">
+    { "imports": { "three": "./vendor/three.module.min.js" } }
+  </script>
+</head>
+<body>
+  <header class="nav" id="nav">
+    <a class="brand" href="#top" aria-label="S+ Coffee home">
+      <span class="brand-mark">S<sup>+</sup></span><span class="brand-word">Coffee</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#menu">Menu</a>
+      <a href="#events">Events</a>
+      <a href="#find">Find us</a>
+      <a class="btn btn-small" href="#book">Book the truck</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+  </header>
+
+  <main id="top">
+    <!-- HERO with the 3D truck -->
+    <section class="hero">
+      <canvas id="truckCanvas" aria-label="Interactive 3D model of the S+ Coffee truck"></canvas>
+      <div class="hero-copy">
+        <p class="eyebrow" id="heroEyebrow">Specialty coffee on wheels</p>
+        <h1>Good coffee,<br><em>wherever you are.</em></h1>
+        <p class="lede">Hand-crafted lattes, cold brew and house signatures, served from our truck — at the curb, at your office, or at your wedding.</p>
+        <div class="hero-cta">
+          <a class="btn" href="#menu">See the menu</a>
+          <a class="btn btn-ghost" href="#book">Book for an event</a>
+        </div>
+      </div>
+      <p class="hero-hint" id="heroHint"><span class="hint-icon">↻</span> Drag to spin the truck · tap it to open the window</p>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track" id="marquee"></div>
+    </div>
+
+    <!-- MENU -->
+    <section class="section" id="menu">
+      <div class="section-head">
+        <p class="eyebrow">The menu</p>
+        <h2>Pick a cup. <em>Spin it.</em></h2>
+        <p class="section-sub">Tap any drink to see it built in 3D, layer by layer.</p>
+      </div>
+      <div class="tabs" role="tablist" id="menuTabs"></div>
+      <div class="menu-grid" id="menuGrid"></div>
+      <p class="extras" id="extras"></p>
+    </section>
+
+    <!-- EVENTS -->
+    <section class="section section-dark" id="events">
+      <div class="section-head">
+        <p class="eyebrow">Events &amp; catering</p>
+        <h2>Bring the truck <em>to your party.</em></h2>
+        <p class="section-sub">We park, set up, and serve fresh drinks to every guest. You pick the menu — we handle the rest.</p>
+      </div>
+      <div class="packages" id="packages"></div>
+      <ol class="steps">
+        <li><b>1</b><span>Send a request below</span></li>
+        <li><b>2</b><span>We confirm date &amp; quote</span></li>
+        <li><b>3</b><span>The truck shows up — coffee for everyone</span></li>
+      </ol>
+    </section>
+
+    <!-- BOOKING -->
+    <section class="section" id="book">
+      <div class="book-wrap">
+        <div class="book-intro">
+          <p class="eyebrow">Book the truck</p>
+          <h2>Tell us about <em>your event.</em></h2>
+          <p class="section-sub">Fill this in and we’ll get back to you with availability and a quote. No payment needed to ask.</p>
+          <div class="ticket" id="ticket" aria-live="polite">
+            <div class="ticket-top"><span class="brand-mark">S<sup>+</sup></span> Event ticket</div>
+            <dl>
+              <dt>Event</dt><dd data-t="type">—</dd>
+              <dt>Date</dt><dd data-t="date">—</dd>
+              <dt>Guests</dt><dd data-t="guests">—</dd>
+              <dt>Package</dt><dd data-t="package">—</dd>
+            </dl>
+            <div class="ticket-cups" data-t="cups"></div>
+          </div>
+        </div>
+
+        <form class="book-form" id="bookForm" novalidate>
+          <div class="field-row">
+            <label class="field"><span>Your name *</span><input name="name" required autocomplete="name"></label>
+            <label class="field"><span>Phone *</span><input name="phone" type="tel" required autocomplete="tel"></label>
+          </div>
+          <label class="field"><span>Email</span><input name="email" type="email" autocomplete="email"></label>
+
+          <fieldset class="field">
+            <legend>Type of event *</legend>
+            <div class="chips" id="eventTypes"></div>
+          </fieldset>
+
+          <div class="field-row">
+            <label class="field"><span>Date *</span><input name="date" type="date" required></label>
+            <label class="field"><span>Start time</span><input name="time" type="time"></label>
+          </div>
+          <div class="field-row">
+            <label class="field"><span>Hours of service</span>
+              <select name="hours"><option>2</option><option selected>3</option><option>4</option><option>5+</option></select>
+            </label>
+            <label class="field"><span>Guests: <output id="guestsOut">60</output></span>
+              <input name="guests" type="range" min="10" max="500" step="10" value="60" id="guests">
+            </label>
+          </div>
+          <label class="field"><span>Event location / address *</span><input name="location" required placeholder="Venue, street or neighborhood"></label>
+
+          <fieldset class="field">
+            <legend>Package</legend>
+            <div class="chips" id="packageChips"></div>
+          </fieldset>
+
+          <fieldset class="field">
+            <legend>Drinks you’d like served <small>(optional)</small></legend>
+            <div class="chips chips-small" id="drinkChips"></div>
+          </fieldset>
+
+          <label class="field"><span>Anything else?</span><textarea name="notes" rows="3" placeholder="Theme, power on site, cup branding, dietary needs…"></textarea></label>
+
+          <button class="btn btn-wide" type="submit" id="submitBtn">Send booking request</button>
+          <p class="form-note" id="formNote"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- FIND US -->
+    <section class="section section-dark" id="find">
+      <div class="section-head">
+        <p class="eyebrow">Find the truck</p>
+        <h2>We move around. <em>Follow along.</em></h2>
+        <p class="section-sub">Our location changes day to day — we post where we’re parked on our socials.</p>
+      </div>
+      <div class="socials" id="socials"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span class="brand"><span class="brand-mark">S<sup>+</sup></span><span class="brand-word">Coffee</span></span>
+    <span id="footerInfo"></span>
+    <span>© <span id="year"></span> S+ Coffee</span>
+  </footer>
+
+  <!-- 3D drink viewer -->
+  <dialog class="drink-modal" id="drinkModal">
+    <button class="modal-close" id="modalClose" aria-label="Close">×</button>
+    <div class="drink-stage"><canvas id="cupCanvas"></canvas><p class="hero-hint">Drag to turn the cup</p></div>
+    <div class="drink-info">
+      <p class="eyebrow" id="drinkCat"></p>
+      <h3 id="drinkName"></h3>
+      <p id="drinkDesc"></p>
+      <ul class="layer-legend" id="drinkLayers"></ul>
+      <p class="drink-price" id="drinkPrice"></p>
+      <button class="btn" id="drinkBook">Serve this at my event</button>
+    </div>
+  </dialog>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
