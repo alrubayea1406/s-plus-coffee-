@@ -1,143 +1,98 @@
-import { BUSINESS, MENU, EXTRAS } from "./config.js";
+import { BUSINESS, SIGNATURE, SEASONAL, MENU, FLAVORS, MENU_NOTE, BOOKING_DRINKS } from "./config.js";
 
 const $ = (s, el = document) => el.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const LEAF = '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#leaf"/></svg>';
 
 // ── Nav ──────────────────────────────────────────
 const nav = $("#nav"), navLinks = $("#navLinks"), navToggle = $("#navToggle");
 const setMenu = (open) => {
   navLinks.classList.toggle("open", open);
   navToggle.setAttribute("aria-expanded", open);
+  navToggle.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
   document.body.style.overflow = open ? "hidden" : "";
 };
 navToggle.addEventListener("click", () => setMenu(!navLinks.classList.contains("open")));
 navLinks.addEventListener("click", (e) => e.target.closest("a") && setMenu(false));
-
-// ── 3D truck (falls back gracefully if WebGL is unavailable) ──
-let truck = null;
-import("./truck.js")
-  .then(({ initTruck }) => {
-    truck = initTruck($("#truckCanvas"), {
-      onFirstInteract: () => ($("#heroHint").style.opacity = 0),
-    });
-  })
-  .catch((err) => {
-    console.warn("3D scene unavailable:", err);
-    $("#heroHint").remove();
-  });
-
-const hero = $(".hero");
-const onScroll = () => {
-  nav.classList.toggle("scrolled", window.scrollY > 40);
-  const p = Math.min(Math.max(window.scrollY / hero.offsetHeight, 0), 1);
-  truck?.setScroll(p);
-};
-window.addEventListener("scroll", onScroll, { passive: true });
+addEventListener("keydown", (e) => e.key === "Escape" && setMenu(false));
+const onScroll = () => nav.classList.toggle("scrolled", scrollY > 30);
+addEventListener("scroll", onScroll, { passive: true });
 onScroll();
 
-if (BUSINESS.city) $("#heroEyebrow").textContent = `${BUSINESS.tagline} · ${BUSINESS.city}`;
+// ── Components ───────────────────────────────────
+const SectionImage = ({ image, w, h, alt }, cls, eager = false) =>
+  `<figure class="${cls}"><img src="${image}" width="${w}" height="${h}" alt="${esc(alt || "")}" ${eager ? "" : 'loading="lazy" '}decoding="async"></figure>`;
 
-// ── Marquee ──────────────────────────────────────
-const names = MENU.flatMap((c) => c.items.map((i) => i.name));
-$("#marquee").innerHTML = [...names, ...names].map((n) => `<span>${esc(n)}</span>`).join("");
+const Ingredient = ([amt, name, note]) => `
+  <li><span class="ing-amt">${esc(amt || "·")}</span>
+      <span class="ing-name">${esc(name)}${note ? `<span class="ing-note">${esc(note)}</span>` : ""}</span></li>`;
 
-// ── Menu ─────────────────────────────────────────
-function glassHTML(item) {
-  const total = item.layers.reduce((a, l) => a + l.h, 0);
-  const fill = Math.min(total, 0.9) / total;
-  const layers = item.layers.map((l) => `<i style="height:${(l.h * fill * 100).toFixed(1)}%;background:${l.c}"></i>`).join("");
-  const top = 100 - Math.min(total, 0.9) * 100;
-  const extra = item.iced
-    ? `<span class="straw"></span>` + [0, 1, 2].map((i) => `<span class="ice" style="left:${14 + i * 18}px;top:${top + 4 + (i % 2) * 10}%;transform:rotate(${i * 20 - 10}deg)"></span>`).join("")
-    : `<span class="steam"></span><span class="steam"></span><span class="steam"></span>`;
-  return `<div class="glass">${extra}<div class="glass-body">${layers}</div></div>`;
-}
+const FeaturedDrink = (d, flip = false) => `
+  <article class="feature${flip ? " flip" : ""}" id="drink-${d.id}" style="--accent:${d.accent}">
+    ${SectionImage(d, "feature-media")}
+    <div class="feature-copy">
+      <p class="feature-kicker">${esc(d.kicker)}</p>
+      <h3>${esc(d.name)}</h3>
+      <div class="divider">${LEAF}</div>
+      <p class="feature-blurb">${esc(d.blurb)}</p>
+      <ul class="ingredients">${d.ingredients.map(Ingredient).join("")}</ul>
+      <p class="serve"><span>${esc(d.size)}</span><span>${esc(d.serve)}</span></p>
+    </div>
+  </article>`;
 
-const tabs = $("#menuTabs"), grid = $("#menuGrid");
-const allTab = { id: "all", name: "All" };
-[allTab, ...MENU].forEach((c, i) => {
-  const b = document.createElement("button");
-  b.className = "tab";
-  b.role = "tab";
-  b.textContent = c.name;
-  b.dataset.cat = c.id;
-  b.setAttribute("aria-selected", i === 1);
-  b.addEventListener("click", () => renderMenu(c.id));
-  tabs.append(b);
-});
+const SeasonalDrink = (d) => `
+  <article class="fall-card">
+    ${SectionImage({ ...d, alt: `${d.name} in an S+ cup` }, "fall-media")}
+    <div class="fall-body">
+      <h3>${esc(d.name)}</h3>
+      <p class="fall-recipe">${esc(d.recipe)}</p>
+      <p class="fall-price">${esc(d.price)}</p>
+    </div>
+  </article>`;
 
-function renderMenu(catId) {
-  tabs.querySelectorAll(".tab").forEach((t) => t.setAttribute("aria-selected", t.dataset.cat === catId));
-  const cats = catId === "all" ? MENU : MENU.filter((c) => c.id === catId);
-  grid.innerHTML = "";
-  let n = 0;
-  cats.forEach((cat) => cat.items.forEach((item) => {
-    const card = document.createElement("button");
-    card.className = "card";
-    card.type = "button";
-    card.style.animationDelay = `${n++ * 0.05}s`;
-    card.innerHTML = `
-      ${item.tag ? `<span class="badge">${esc(item.tag)}</span>` : ""}
-      <div class="card-cup">${glassHTML(item)}</div>
-      <h3>${esc(item.name)}</h3>
-      <p>${esc(item.desc)}</p>
-      <div class="card-meta"><span class="price">${esc(item.price || "")}</span><span class="spin">${item.iced ? "Hot or iced · " : ""}View in 3D →</span></div>`;
-    card.addEventListener("click", () => openDrink(item, cat));
-    addTilt(card);
-    grid.append(card);
-  }));
-}
-renderMenu(MENU[0].id);
-$("#extras").innerHTML = `<b>Make it yours:</b> ${EXTRAS.map(esc).join(" · ")}`;
+const price = (p) => (p ? esc(p) : '<span class="na" aria-label="not available">—</span>');
+const MenuItem = ([name, a, b]) => `<tr><td>${esc(name)}</td><td class="p">${price(a)}</td><td class="p">${price(b)}</td></tr>`;
+const FlatList = (rows) => `<ul class="flat-list">${rows.map(([k, v]) => `<li><span>${esc(k)}</span><span>${esc(v)}</span></li>`).join("")}</ul>`;
 
-function addTilt(el) {
-  if (matchMedia("(hover: none)").matches) return;
-  el.addEventListener("pointermove", (e) => {
-    const r = el.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
-    el.style.transform = `rotateY(${x * 14}deg) rotateX(${-y * 14}deg) translateZ(10px)`;
-  });
-  el.addEventListener("pointerleave", () => (el.style.transform = ""));
-}
+const MenuCategory = (c) => `
+  <section class="menu-cat" id="menu-${c.id}" aria-labelledby="menu-${c.id}-h">
+    <h3 id="menu-${c.id}-h">${esc(c.name)}</h3>
+    ${c.items ? `<table class="price-table">
+      <thead><tr><th scope="col"><span class="visually-hidden">Drink</span></th>${c.sizes.map((s) => `<th scope="col">${esc(s)}</th>`).join("")}</tr></thead>
+      <tbody>${c.items.map(MenuItem).join("")}</tbody></table>` : ""}
+    ${c.flat ? FlatList(c.flat) : ""}
+    ${c.choices ? `<div class="choices">
+      <p class="choices-head"><span>${esc(c.choices.label)}</span><span>${esc(c.choices.extra)}</span></p>
+      <ul class="pill-list">${c.choices.list.map((f) => `<li>${esc(f)}</li>`).join("")}</ul></div>` : ""}
+    ${c.link ? `<a class="cat-link" href="${c.link.href}">${esc(c.link.text)} →</a>` : ""}
+  </section>`;
 
-// ── Drink modal ──────────────────────────────────
-const modal = $("#drinkModal");
-let cupViewer = null, currentDrink = null;
-async function openDrink(item, cat) {
-  currentDrink = item;
-  $("#drinkCat").textContent = cat.name;
-  $("#drinkName").textContent = item.name;
-  $("#drinkDesc").textContent = item.desc;
-  $("#drinkPrice").textContent = item.price || "";
-  $("#drinkLayers").innerHTML = [item.tag, item.iced ? "Hot or iced" : "Served hot", "Any milk"]
-    .filter(Boolean).map((t) => `<li>${esc(t)}</li>`).join("");
-  modal.showModal();
-  try {
-    if (!cupViewer) cupViewer = (await import("./cup.js")).initCup($("#cupCanvas"));
-    cupViewer.open(item);
-  } catch (err) {
-    console.warn("3D cup unavailable:", err);
-  }
-}
-const closeModal = () => modal.close();
-$("#modalClose").addEventListener("click", closeModal);
-modal.addEventListener("click", (e) => e.target === modal && closeModal());
-modal.addEventListener("close", () => cupViewer?.close());
-$("#drinkBook").addEventListener("click", () => {
-  const box = [...document.querySelectorAll('#drinkChips input')].find((i) => i.value === currentDrink.name);
-  if (box) box.checked = true;
-  closeModal();
-  updateTicket();
-  $("#book").scrollIntoView({ behavior: "smooth" });
-});
+// ── Signature drinks: two big alternating rows, then a staggered pair ──
+const [first, second, ...rest] = SIGNATURE;
+$("#signatureList").innerHTML =
+  FeaturedDrink(first) + FeaturedDrink(second, true) +
+  `<div class="feature-pair">${rest.map((d) => FeaturedDrink(d)).join("")}</div>`;
+
+// ── Fall menu ────────────────────────────────────
+$("#fallKicker").textContent = SEASONAL.kicker;
+$("#fallTitle").textContent = SEASONAL.title;
+$("#fallLine").textContent = SEASONAL.line;
+$("#fallGrid").innerHTML = SEASONAL.items.map(SeasonalDrink).join("");
+
+// ── Full menu ────────────────────────────────────
+$("#menuNote").innerHTML = `<svg viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M12 2v20M4 6.5l16 11M20 6.5l-16 11M9.5 3.5 12 6l2.5-2.5M9.5 20.5 12 18l2.5 2.5"/></svg>${esc(MENU_NOTE)}`;
+$("#menuGrid").innerHTML = MENU.map(MenuCategory).join("");
+$("#flavors").innerHTML = `<h3>Flavors<span>${esc(FLAVORS.extra)}</span></h3>
+  <ul class="flavor-list">${FLAVORS.list.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>`;
 
 // ── Booking form ─────────────────────────────────
 const chip = (type, name, value, label, checked = false) =>
-  `<label class="chip"><input type="${type}" name="${name}" value="${esc(value)}"${checked ? " checked" : ""}><span>${esc(label)}</span></label>`;
+  `<label class="chip"><input type="${type}" id="${name}-${slug(value)}" name="${name}" value="${esc(value)}"${checked ? " checked" : ""}><span>${esc(label)}</span></label>`;
 
 const EVENT_TYPES = ["Wedding", "Birthday", "Corporate", "Graduation", "School / Campus", "Festival", "Private party", "Other"];
 $("#eventTypes").innerHTML = EVENT_TYPES.map((t) => chip("radio", "type", t, t)).join("");
-$("#drinkChips").innerHTML = MENU.flatMap((c) => c.items).map((i) => chip("checkbox", "drinks", i.name, i.name)).join("");
+$("#drinkChips").innerHTML = BOOKING_DRINKS.map((n) => chip("checkbox", "drinks", n, n)).join("");
 
 const form = $("#bookForm");
 const dateInput = form.elements.date;
@@ -224,10 +179,10 @@ form.addEventListener("submit", async (e) => {
       });
       if (!res.ok) throw new Error(res.status);
       form.reset(); updateTicket();
-      note.textContent = "Request sent! We’ll get back to you shortly ☕";
+      note.textContent = "Request sent. We’ll get back to you shortly.";
       note.classList.add("ok");
     } catch {
-      note.textContent = "Couldn’t send right now — please try again, or message us on Instagram.";
+      note.textContent = "That didn’t go through. Please try again, or message us on Instagram.";
       note.classList.add("err");
     } finally {
       btn.disabled = false; btn.textContent = "Send booking request";
@@ -236,13 +191,13 @@ form.addEventListener("submit", async (e) => {
   }
   if (BUSINESS.whatsapp) {
     window.open(`https://wa.me/${BUSINESS.whatsapp}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
-    note.textContent = "Opening WhatsApp — just hit send!";
+    note.textContent = "Opening WhatsApp. Just hit send.";
     note.classList.add("ok");
     return;
   }
   if (BUSINESS.email) {
     location.href = `mailto:${BUSINESS.email}?subject=${encodeURIComponent(`Event booking: ${d.type} on ${d.date}`)}&body=${encodeURIComponent(text)}`;
-    note.textContent = "Opening your email app — just hit send!";
+    note.textContent = "Opening your email app. Just hit send.";
     note.classList.add("ok");
     return;
   }
@@ -258,22 +213,50 @@ form.addEventListener("submit", async (e) => {
   note.querySelector(".copy-box")?.select();
 });
 
-// ── Socials & footer ─────────────────────────────
+// ── Location, socials & footer ───────────────────
 const ICONS = {
-  Instagram: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>',
-  Linktree: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 3v18M5 7l7 5 7-5M6 15h12"/></svg>',
-  TikTok: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3v11a4 4 0 1 1-4-4M14 3c0 3 2 5 5 5"/></svg>',
-  default: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>',
+  Instagram: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6"/></svg>',
+  Linktree: '<svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M12 3v18M5 7l7 5 7-5M6 15h12"/></svg>',
+  default: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>',
 };
+$("#addrStreet").textContent = BUSINESS.street + ",";
+$("#addrCity").textContent = BUSINESS.cityLine;
+$("#addrCountry").textContent = BUSINESS.country;
+$("#directionsBtn").href = BUSINESS.directionsUrl;
+const ig = BUSINESS.socials.find((s) => s.label === "Instagram");
+if (ig) $("#followBtn").href = ig.url; else $("#followBtn").remove();
 const contacts = [
   ...BUSINESS.socials,
   BUSINESS.phone && { label: "Call or text", handle: BUSINESS.phone, url: `tel:${BUSINESS.phone.replace(/[^\d+]/g, "")}` },
   BUSINESS.email && { label: "Email", handle: BUSINESS.email, url: `mailto:${BUSINESS.email}` },
 ].filter(Boolean);
-$("#socials").innerHTML = contacts.map((s) => `
-  <a class="social" href="${esc(s.url)}" target="_blank" rel="noopener">
-    <span class="social-icon">${ICONS[s.label] || ICONS.default}</span>
-    <span><b>${esc(s.label)}</b><small>${esc(s.handle)}</small></span>
-  </a>`).join("");
-$("#footerInfo").textContent = [BUSINESS.tagline, BUSINESS.city].filter(Boolean).join(" · ");
+$("#socials").innerHTML = contacts.map((s) =>
+  `<a href="${esc(s.url)}" target="_blank" rel="noopener">${ICONS[s.label] || ICONS.default}<span>${esc(s.handle)}</span></a>`).join("");
+$("#footerAddr").textContent = `${BUSINESS.street}, ${BUSINESS.cityLine}`;
 $("#year").textContent = new Date().getFullYear();
+
+// ── Active nav link ──────────────────────────────
+const links = [...navLinks.querySelectorAll('a[href^="#"]')];
+const spy = new IntersectionObserver((entries) => {
+  entries.forEach((e) => {
+    if (!e.isIntersecting) return;
+    links.forEach((a) => a.classList.toggle("active", a.getAttribute("href") === `#${e.target.id}`));
+  });
+}, { rootMargin: "-45% 0px -50% 0px" });
+links.forEach((a) => { const s = document.querySelector(a.getAttribute("href")); if (s) spy.observe(s); });
+
+// ── Gentle entry animation for content below the first screen ──
+if (!matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window) {
+  const targets = document.querySelectorAll(".section-head, .feature, .fall-card, .menu-cat, .flavors, .about > *, .address-block, .book-wrap > *");
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add("reveal-in");
+      e.target.classList.remove("pre");
+      io.unobserve(e.target);
+    });
+  }, { rootMargin: "0px 0px -8% 0px" });
+  targets.forEach((el) => {
+    if (el.getBoundingClientRect().top > innerHeight) { el.classList.add("pre"); io.observe(el); }
+  });
+}

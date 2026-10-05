@@ -1,15 +1,19 @@
 // ─────────────────────────────────────────────────────────────
-//  S+ Coffee — site content
-//  Everything the owner may want to change lives in this file:
-//  contact info, social links and the full menu.
+//  S+ Plus Coffee — site content
+//  Everything the owner may want to change lives in this file.
+//  Menu, prices and recipes are transcribed from the S+ Instagram
+//  posts (main menu, Fall Menu and the four specialty drink posts).
 // ─────────────────────────────────────────────────────────────
 
 export const BUSINESS = {
-  name: "S+ Coffee",
-  tagline: "Specialty coffee on wheels",
-  city: "", // e.g. "Durham, NC" — shown in the hero and footer when set
+  name: "S+ Plus Coffee",
+  tagline: "Specialty Coffee · Good Vibes",
+  street: "1018 W Main St",
+  cityLine: "Durham, NC 27701",
+  country: "United States",
+  directionsUrl: "https://www.google.com/maps/dir/?api=1&destination=1018+W+Main+St,+Durham,+NC+27701",
 
-  // Booking requests are delivered using the first option that is filled in:
+  // Event booking requests are delivered using the first option that is filled in:
   //   1. formEndpoint — a Formspree / Getform URL (works without opening an app)
   //   2. whatsapp     — international number, digits only, e.g. "19195551234"
   //   3. email        — opens the visitor's mail app with the request pre-filled
@@ -19,174 +23,210 @@ export const BUSINESS = {
   phone: "", // display only, e.g. "(919) 555-1234"
 
   socials: [
-    { label: "Instagram", handle: "@spluscoffee", url: "https://instagram.com/spluscoffee" },
+    { label: "Instagram", handle: "@spluscoffee.nc", url: "https://www.instagram.com/spluscoffee.nc/" },
     { label: "Linktree", handle: "linktr.ee/spluscoffee", url: "https://linktr.ee/spluscoffee" },
-    // { label: "TikTok", handle: "@spluscoffee", url: "https://tiktok.com/@spluscoffee" },
-    // { label: "Snapchat", handle: "spluscoffee", url: "https://snapchat.com/add/spluscoffee" },
   ],
 };
 
-// Each drink's `layers` paint the 3D cup, bottom → top.
-// h is the share of the cup height (they don't need to add up to 1 — the rest stays empty).
-// price: leave as "" to hide it.
-const ESPRESSO = "#3b1f12", MILK = "#efe3d0", FOAM = "#fbf6ec", CARAMEL = "#c07a2c";
-const ICE = "#d9ecf2";
-
-export const MENU = [
+// ── Signature / specialty drinks (from the S+ drink posts) ──
+// `accent` tints small details of each feature; amounts are as posted.
+export const SIGNATURE = [
   {
-    id: "signature",
-    name: "Signatures",
-    items: [
-      {
-        name: "D-1 Coffee",
-        desc: "Espresso and cold brew with vanilla and brown sugar, topped with M&M's.",
-        price: "", iced: true, tag: "House favorite",
-        layers: [{ c: "#5a3018", h: 0.35 }, { c: "#8a5a35", h: 0.3 }, { c: "#d8b98d", h: 0.15 }],
-        topping: "candy",
-      },
-      {
-        name: "Spanish Latte",
-        desc: "Double espresso over sweetened condensed milk and fresh milk.",
-        price: "", iced: true, tag: "Best seller",
-        layers: [{ c: "#f4e6c8", h: 0.22 }, { c: MILK, h: 0.38 }, { c: ESPRESSO, h: 0.18 }],
-      },
-      {
-        name: "Banana Latte",
-        desc: "Espresso with banana-infused milk — smooth, sweet, a little nostalgic.",
-        price: "", iced: true,
-        layers: [{ c: "#f1df9a", h: 0.45 }, { c: "#a26c3f", h: 0.3 }],
-      },
-      {
-        name: "Pistachio Latte",
-        desc: "House pistachio cream, espresso and milk, finished with crushed pistachio.",
-        price: "", iced: true,
-        layers: [{ c: "#c9d6a0", h: 0.4 }, { c: "#9a7454", h: 0.3 }, { c: "#e7efd0", h: 0.08 }],
-        topping: "crumble",
-      },
-      {
-        name: "Saffron Rose Latte",
-        desc: "Saffron and rose syrup with espresso and steamed milk.",
-        price: "",
-        layers: [{ c: "#c9925b", h: 0.55 }, { c: "#f5d9c4", h: 0.2 }],
-      },
+    id: "d1",
+    name: "D-1 Coffee",
+    kicker: "Where it all began",
+    blurb: "Rich, smooth, and a little fun. One of our S+ special drinks.",
+    size: "16 oz",
+    serve: "Iced or hot",
+    accent: "#c99a4b",
+    image: "assets/img/d1-coffee.webp", w: 758, h: 1029,
+    alt: "D-1 Coffee in an S+ cup topped with M&M's and a small dried-flower bouquet",
+    ingredients: [
+      ["2 shots", "Espresso", "Rich and bold"],
+      ["4 oz", "Cold brew", "Smooth and refreshing"],
+      ["1 oz", "Vanilla syrup", "Sweet and aromatic"],
+      ["1 oz", "Brown sugar syrup", "Caramel notes"],
+      ["", "Ice", "Chilled to perfection"],
+      ["", "M&M's topping", "A fun and sweet touch"],
     ],
   },
   {
-    id: "espresso",
-    name: "Espresso Bar",
-    items: [
-      {
-        name: "Espresso",
-        desc: "A rich double shot, pulled to order.",
-        price: "",
-        layers: [{ c: ESPRESSO, h: 0.32 }, { c: "#a0663a", h: 0.06 }],
-      },
-      {
-        name: "Americano",
-        desc: "Espresso lengthened with hot water.",
-        price: "", iced: true,
-        layers: [{ c: "#2d170c", h: 0.72 }, { c: "#7b4a28", h: 0.04 }],
-      },
-      {
-        name: "Cortado",
-        desc: "Espresso cut with an equal measure of warm milk.",
-        price: "",
-        layers: [{ c: "#6b3d22", h: 0.3 }, { c: "#cfa77c", h: 0.18 }],
-      },
-      {
-        name: "Cappuccino",
-        desc: "Espresso, steamed milk and a deep cap of foam.",
-        price: "",
-        layers: [{ c: ESPRESSO, h: 0.2 }, { c: "#c9a27b", h: 0.25 }, { c: FOAM, h: 0.3 }],
-      },
-      {
-        name: "Flat White",
-        desc: "Ristretto shots with silky micro-foam.",
-        price: "",
-        layers: [{ c: "#5a3018", h: 0.25 }, { c: "#d7b58f", h: 0.42 }, { c: FOAM, h: 0.06 }],
-      },
-      {
-        name: "Latte",
-        desc: "Espresso with plenty of steamed milk.",
-        price: "", iced: true,
-        layers: [{ c: ESPRESSO, h: 0.18 }, { c: MILK, h: 0.52 }, { c: FOAM, h: 0.08 }],
-      },
-      {
-        name: "Caramel Macchiato",
-        desc: "Vanilla milk, espresso, caramel drizzle.",
-        price: "", iced: true,
-        layers: [{ c: MILK, h: 0.45 }, { c: "#8a5a35", h: 0.2 }, { c: CARAMEL, h: 0.05 }],
-      },
-      {
-        name: "Mocha",
-        desc: "Espresso, dark chocolate and steamed milk.",
-        price: "", iced: true,
-        layers: [{ c: "#4a2616", h: 0.3 }, { c: "#7c4a2d", h: 0.35 }, { c: FOAM, h: 0.1 }],
-      },
+    id: "orangello",
+    name: "Orangello",
+    kicker: "Where coffee meets orange",
+    blurb: "A bright fusion of espresso and fresh orange. Refreshing, smooth, and perfectly balanced.",
+    size: "16 oz",
+    serve: "Iced only",
+    accent: "#e08a3c",
+    image: "assets/img/orangello.webp", w: 787, h: 1056,
+    alt: "Iced Orangello layered espresso and orange juice with a dried orange slice and fresh oranges",
+    ingredients: [
+      ["2 shots", "Espresso", ""],
+      ["4 oz", "Fresh orange juice", ""],
+      ["0.5 oz", "Orange syrup", ""],
+      ["0.5 oz", "Vanilla syrup", ""],
+      ["", "Ice", ""],
     ],
   },
   {
-    id: "cold",
-    name: "Cold & Blended",
-    items: [
-      {
-        name: "Cold Brew",
-        desc: "Steeped for 18 hours. Bold, low acid, over ice.",
-        price: "", iced: true,
-        layers: [{ c: "#2a150b", h: 0.75 }],
-      },
-      {
-        name: "Vanilla Sweet Cream Cold Brew",
-        desc: "Cold brew floated with vanilla sweet cream.",
-        price: "", iced: true,
-        layers: [{ c: "#2a150b", h: 0.55 }, { c: "#b8916a", h: 0.12 }, { c: "#f6ead6", h: 0.1 }],
-      },
-      {
-        name: "Caramel Frappé",
-        desc: "Blended coffee, caramel and milk, whipped cream on top.",
-        price: "", iced: true,
-        layers: [{ c: "#c39a6d", h: 0.65 }, { c: "#fffaf0", h: 0.15 }],
-        topping: "drizzle",
-      },
-      {
-        name: "Matcha Latte",
-        desc: "Ceremonial-grade matcha whisked into milk.",
-        price: "", iced: true,
-        layers: [{ c: MILK, h: 0.35 }, { c: "#8fb069", h: 0.35 }],
-      },
+    id: "tokyo",
+    name: "Tokyo Matcha",
+    kicker: "Inspired by Japan. Crafted by S+.",
+    blurb: "Smooth, rich, and made for matcha lovers.",
+    size: "16 oz",
+    serve: "Iced or hot",
+    accent: "#9db36a",
+    image: "assets/img/tokyo-matcha.webp", w: 787, h: 1044,
+    alt: "Tokyo Matcha with coconut cream, cocoa and cardamom pods on top",
+    ingredients: [
+      ["2–2.5 g", "Premium matcha", "Vibrant and smooth"],
+      ["5 oz", "Coconut milk", "Creamy and tropical"],
+      ["2 oz", "Oat milk", "Smooth and balanced"],
+      ["0.75 oz", "Vanilla syrup", "Sweet and aromatic"],
+      ["0.5 oz", "Coconut syrup", "Subtle and fragrant"],
+      ["2–3 pods", "Cardamom", "Warm and fragrant"],
     ],
   },
   {
-    id: "tea",
-    name: "Tea & Traditional",
-    items: [
-      {
-        name: "Arabic Coffee",
-        desc: "Lightly roasted with cardamom and saffron, served with dates.",
-        price: "",
-        layers: [{ c: "#c9a15a", h: 0.5 }],
-      },
-      {
-        name: "Karak Chai",
-        desc: "Black tea simmered with milk, cardamom and spice.",
-        price: "",
-        layers: [{ c: "#b47d4c", h: 0.68 }, { c: "#d9b48a", h: 0.06 }],
-      },
-      {
-        name: "Hot Chocolate",
-        desc: "Real chocolate, steamed milk, marshmallows.",
-        price: "",
-        layers: [{ c: "#4a2616", h: 0.62 }, { c: FOAM, h: 0.1 }],
-        topping: "marshmallow",
-      },
-      {
-        name: "Fresh Lemonade",
-        desc: "Squeezed to order, with a mint option.",
-        price: "", iced: true,
-        layers: [{ c: "#f5e98a", h: 0.7 }],
-      },
+    id: "sabah",
+    name: "Sabah Tea",
+    kicker: "A little taste of what’s coming",
+    blurb: "Bold, smooth, and crafted with intention.",
+    size: "16 oz",
+    serve: "Iced or hot",
+    accent: "#c4733a",
+    image: "assets/img/sabah-tea.webp", w: 773, h: 975,
+    alt: "Sabah Tea over ice with cinnamon sticks and cardamom pods",
+    ingredients: [
+      ["8 oz", "Black tea", "Robust and aromatic"],
+      ["1–1.5 oz", "Peach syrup", "Sweet and fruity"],
+      ["0.5 oz", "Honey syrup", "Smooth and natural"],
+      ["2–3 pods", "Cardamom", "Warm and fragrant"],
+      ["", "Cinnamon", "A touch of spice"],
+      ["", "Ice (optional)", "Enjoy it your way"],
     ],
   },
 ];
 
-export const EXTRAS = ["Oat milk", "Almond milk", "Extra shot", "Vanilla", "Caramel", "Hazelnut", "Sugar-free syrups"];
+// ── Fall Menu · seasonal drinks (from the S+ Fall Menu post) ──
+const fall = (slug) => `assets/img/fall-${slug}.webp`;
+export const SEASONAL = {
+  title: "Fall Menu",
+  kicker: "Seasonal drinks",
+  line: "The next chapter of coffee.",
+  items: [
+    { name: "Pumpkin Spice Latte", recipe: "pumpkin spice + espresso + milk + pumpkin pie spice", price: "$6.25", image: fall("pumpkin-spice-latte"), w: 307, h: 395 },
+    { name: "Banana Bread Latte", recipe: "banana + vanilla + espresso + milk + cinnamon", price: "$6.50", image: fall("banana-bread-latte"), w: 308, h: 395 },
+    { name: "Coconut Pumpkin Macchiato", recipe: "coconut + pumpkin spice + espresso + milk", price: "$6.75", image: fall("coconut-pumpkin-macchiato"), w: 310, h: 395 },
+    { name: "Pumpkin Chai Latte", recipe: "chai + pumpkin spice + milk + pumpkin pie spice", price: "$6.25", image: fall("pumpkin-chai-latte"), w: 310, h: 395 },
+    { name: "Pumpkin Spice Matcha", recipe: "matcha + pumpkin spice + milk + pumpkin pie spice", price: "$6.75", image: fall("pumpkin-spice-matcha"), w: 307, h: 421 },
+    { name: "Pumpkin Lavender Tiramisu Matcha", recipe: "matcha + pumpkin spice + lavender + tiramisu cream + milk", price: "$6.75", image: fall("pumpkin-lavender-tiramisu-matcha"), w: 308, h: 421 },
+    { name: "Pumpkin Cookie Butter Matcha", recipe: "matcha + pumpkin spice + cookie butter + milk + pumpkin pie spice", price: "$6.75", image: fall("pumpkin-cookie-butter-matcha"), w: 310, h: 421 },
+    { name: "Pumpkin Cream Cold Brew", recipe: "cold brew + pumpkin spice + cream + pumpkin pie spice", price: "$6.25", image: fall("pumpkin-cream-cold-brew"), w: 310, h: 421 },
+  ],
+};
+
+// ── Full menu (from the S+ main menu post) ──
+// Priced items: [name, 12 oz price, 16 oz price] — null where the menu shows "—".
+// `flat` rows are simple [label, value] pairs (size lists, milk options).
+export const MENU = [
+  {
+    id: "coffee",
+    name: "Coffee",
+    sizes: ["12 oz", "16 oz"],
+    items: [
+      ["Drip Coffee", "$2.95", "$3.45"],
+      ["Turkish Coffee", "$3.95", "$4.50"],
+      ["Pour Over", "$5.95", "$6.95"],
+      ["Cold Brew", null, "$4.75"],
+      ["Iced Coffee", null, "$4.25"],
+      ["Protein Cold Brew", null, "$6.25"],
+    ],
+  },
+  {
+    id: "espresso",
+    name: "Espresso",
+    sizes: ["12 oz", "16 oz"],
+    items: [
+      ["Espresso", "$2.99", null],
+      ["Espresso Macchiato", "$3.50", null],
+      ["Cortado", "$3.95", null],
+      ["Americano", "$3.50", "$4.25"],
+      ["Cappuccino", "$4.25", "$4.95"],
+      ["Latte", "$4.50", "$5.25"],
+      ["Protein Latte", "$5.50", "$6.50"],
+      ["Pistachio Latte", "$5.50", "$6.50"],
+      ["Flat White", "$4.75", "$5.50"],
+      ["S+ Mocha", "$5.25", "$5.95"],
+    ],
+  },
+  {
+    id: "matcha",
+    name: "Matcha",
+    flat: [["12 oz", "$5.50"], ["16 oz", "$6.50"]],
+    choices: {
+      label: "Choose your flavor",
+      extra: "+ $0.75",
+      list: ["Protein", "Cherry", "Orange", "Strawberry", "Raspberry", "Banana", "Mango", "Lavender"],
+    },
+  },
+  {
+    id: "tea",
+    name: "Tea Collection",
+    sizes: ["12 oz", "16 oz"],
+    items: [
+      ["Turkish Tea", "$3.50", "$4.25"],
+      ["Arabic Tea", "$3.50", "$4.25"],
+      ["Spearmint Tea", "$3.50", "$4.25"],
+      ["Ginger Peach", "$3.50", "$4.25"],
+      ["Green Tea", "$3.50", "$4.25"],
+      ["English Breakfast", "$3.50", "$4.25"],
+      ["Earl Grey", "$3.50", "$4.25"],
+      ["Triple Berry", "$3.50", "$4.25"],
+      ["Chai Latte", "$4.50", "$5.25"],
+      ["Karak Chai", "$4.75", "$5.50"],
+    ],
+  },
+  {
+    id: "specialty",
+    name: "Specialty Drinks",
+    sizes: ["12 oz", "16 oz"],
+    items: [
+      ["Lemonade", null, "$4.25"],
+      ["Orange Juice", null, "$4.25"],
+      ["Hot Chocolate", "$3.50", "$4.25"],
+      ["Milk Steamer", "$3.00", "$3.75"],
+    ],
+  },
+  {
+    id: "signature",
+    name: "Signature Season Drinks",
+    flat: [["12 oz", "$5.50"], ["16 oz", "$6.25"]],
+    link: { href: "#signature", text: "See the S+ signature drinks" },
+  },
+  {
+    id: "milk",
+    name: "Milk Options",
+    flat: [
+      ["Whole Milk", "Included"],
+      ["Skim Milk", "Included"],
+      ["Oat Milk", "+ $0.75"],
+      ["Almond Milk", "+ $0.75"],
+    ],
+  },
+];
+
+export const FLAVORS = {
+  extra: "+ $0.75",
+  list: [
+    "Vanilla", "Sugar Free Vanilla", "Strawberry", "Raspberry",
+    "Cherry", "Banana", "Caramel", "Hazelnut",
+    "Honey", "Simple Syrup", "Orange", "Lavender",
+    "Pistachio", "Brown Sugar", "Brown Sugar Cinnamon", "White Mocha",
+  ],
+};
+
+export const MENU_NOTE = "All iced drinks are an additional $0.25";
+
+// Drinks a guest can ask for in the event booking form.
+export const BOOKING_DRINKS = ["D-1 Coffee", "Orangello", "Tokyo Matcha", "Sabah Tea", "Espresso drinks", "Matcha", "Tea", "Fall menu"];

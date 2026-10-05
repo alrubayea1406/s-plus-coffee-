@@ -2,77 +2,138 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>S+ Coffee — Specialty Coffee Truck</title>
-  <meta name="description" content="S+ Coffee is a specialty coffee truck. See the full menu, find us, and book the truck for your next event.">
-  <meta name="theme-color" content="#1b0f09">
-  <meta property="og:title" content="S+ Coffee — Specialty Coffee Truck">
-  <meta property="og:description" content="Full menu and event bookings for the S+ Coffee truck.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>S+ Plus Coffee</title>
+  <meta name="description" content="S+ Plus Coffee: a specialty coffee trailer at 1018 W Main St, Durham, NC. Espresso, matcha, tea, S+ signature drinks and the Fall Menu.">
+  <meta name="theme-color" content="#070605">
+  <meta property="og:title" content="S+ Plus Coffee · Durham, NC">
+  <meta property="og:description" content="Specialty coffee and good vibes from the S+ trailer at 1018 W Main St, Durham.">
+  <meta property="og:image" content="assets/img/trailer.webp">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;1,6..96,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="assets/img/trailer.webp" fetchpriority="high">
   <link rel="stylesheet" href="css/styles.css">
-  <script type="importmap">
-    { "imports": { "three": "./vendor/three.module.min.js" } }
-  </script>
 </head>
 <body>
+  <a class="skip" href="#menu">Skip to menu</a>
+
   <header class="nav" id="nav">
-    <a class="brand" href="#top" aria-label="S+ Coffee home">
-      <span class="brand-mark">S<sup>+</sup></span><span class="brand-word">Coffee</span>
+    <a class="logo" href="#top" aria-label="S+ Plus Coffee, back to top">
+      <span class="logo-mark" aria-hidden="true">S<span class="logo-plus">+</span><svg class="logo-leaf" viewBox="0 0 24 24"><use href="#leaf"/></svg></span>
+      <span class="logo-words" aria-hidden="true"><span class="logo-plusword">Plus</span><span class="logo-coffee">Coffee</span></span>
     </a>
-    <nav class="nav-links" id="navLinks">
+    <nav class="nav-links" id="navLinks" aria-label="Main">
       <a href="#menu">Menu</a>
-      <a href="#find">Find us</a>
-      <a class="btn btn-small" href="#book">Book the truck</a>
+      <a href="#signature">Signature Drinks</a>
+      <a href="#about">About</a>
+      <a href="#location">Location</a>
+      <a href="#contact">Contact</a>
     </nav>
-    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+    <button class="nav-toggle" id="navToggle" aria-label="Open navigation" aria-expanded="false" aria-controls="navLinks"><span></span><span></span></button>
   </header>
 
   <main id="top">
-    <!-- HERO with the 3D truck -->
+    <!-- HERO: the real S+ trailer -->
     <section class="hero">
-      <canvas id="truckCanvas" aria-label="Interactive 3D model of the S+ Coffee truck"></canvas>
       <div class="hero-copy">
-        <p class="eyebrow" id="heroEyebrow">Specialty coffee on wheels</p>
-        <h1>Good coffee,<br><em>wherever you are.</em></h1>
-        <p class="lede">Hand-crafted lattes, cold brew and house signatures, served from our truck — at the curb, at your office, or at your wedding.</p>
-        <div class="hero-cta">
-          <a class="btn" href="#menu">See the menu</a>
-          <a class="btn btn-ghost" href="#book">Book for an event</a>
+        <p class="eyebrow">Coffee trailer · Durham, NC</p>
+        <h1>Specialty Coffee.<br><em>Good Vibes.</em></h1>
+        <p class="lede">Espresso, matcha, tea and S+ signature drinks, poured from our trailer at 1018 W Main St.</p>
+        <div class="cta-row">
+          <a class="btn btn-gold" href="#menu">View menu</a>
+          <a class="btn btn-line" href="#location">Find us</a>
         </div>
       </div>
-      <p class="hero-hint" id="heroHint"><span class="hint-icon">↻</span> Drag to spin the truck · tap it to open the window</p>
+      <figure class="hero-media">
+        <img src="assets/img/trailer.webp" width="1309" height="754" fetchpriority="high" decoding="async"
+             alt="The white S+ Plus Coffee trailer with its serving window open, string lights, an espresso machine and a chalkboard menu">
+        <figcaption>The S+ trailer at 1018 W Main St</figcaption>
+      </figure>
     </section>
 
-    <!-- MARQUEE -->
-    <div class="marquee" aria-hidden="true">
-      <div class="marquee-track" id="marquee"></div>
-    </div>
+    <!-- SIGNATURE DRINKS -->
+    <section class="section" id="signature">
+      <header class="section-head">
+        <p class="eyebrow">S+ specialty</p>
+        <h2>Signature Drinks</h2>
+        <p class="section-sub">Four drinks you’ll only find at the S+ window.</p>
+      </header>
+      <div class="features" id="signatureList"></div>
+    </section>
 
-    <!-- MENU -->
+    <!-- FALL MENU -->
+    <section class="section section-fall" id="fall">
+      <header class="section-head fall-head">
+        <div>
+          <p class="eyebrow" id="fallKicker"></p>
+          <h2 id="fallTitle"></h2>
+        </div>
+        <p class="fall-line" id="fallLine"></p>
+      </header>
+      <div class="fall-grid" id="fallGrid"></div>
+    </section>
+
+    <!-- FULL MENU -->
     <section class="section" id="menu">
-      <div class="section-head">
-        <p class="eyebrow">The menu</p>
-        <h2>Pick a cup. <em>Spin it.</em></h2>
-        <p class="section-sub">Tap any drink to see it built in 3D, layer by layer.</p>
-      </div>
-      <div class="tabs" role="tablist" id="menuTabs"></div>
+      <header class="section-head">
+        <p class="eyebrow">The S+ menu</p>
+        <h2>Menu</h2>
+        <p class="menu-note" id="menuNote"></p>
+      </header>
       <div class="menu-grid" id="menuGrid"></div>
-      <p class="extras" id="extras"></p>
+      <div class="flavors" id="flavors"></div>
     </section>
 
+    <!-- ABOUT -->
+    <section class="section about" id="about">
+      <figure class="about-media">
+        <img src="assets/img/trailer-window.webp" width="708" height="287" loading="lazy" decoding="async"
+             alt="Inside the S+ serving window: espresso machine, grinders and the chalkboard menu">
+      </figure>
+      <div class="about-copy">
+        <p class="eyebrow">About S+</p>
+        <h2>Made at the window.</h2>
+        <p>S+ Plus Coffee is a coffee trailer on W Main St in downtown Durham. We pull espresso, whisk matcha and brew tea to order.</p>
+        <p>We also like to experiment, which is how drinks like the D-1 and Orangello happened. Come by, grab a drink, and stay for the good vibes.</p>
+        <ul class="about-facts">
+          <li><b>Coffee · Espresso · Matcha · Tea</b></li>
+          <li><b>Whole, skim, oat or almond milk</b></li>
+          <li><b>16 flavors to add</b></li>
+        </ul>
+      </div>
+    </section>
 
-    <!-- BOOKING -->
-    <section class="section" id="book">
+    <!-- LOCATION -->
+    <section class="section location" id="location">
+      <p class="eyebrow">Find the trailer</p>
+      <div class="address-block">
+        <svg class="pin" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg>
+        <address>
+          <span class="addr-street" id="addrStreet"></span>
+          <span class="addr-city" id="addrCity"></span>
+          <span class="addr-country" id="addrCountry"></span>
+        </address>
+      </div>
+      <p class="see-you">See you soon <span aria-hidden="true">♡</span></p>
+      <div class="cta-row cta-center">
+        <a class="btn btn-gold" id="directionsBtn" href="#" target="_blank" rel="noopener">Get directions</a>
+        <a class="btn btn-line" id="followBtn" href="#" target="_blank" rel="noopener">Follow S+ Coffee</a>
+      </div>
+      <p class="location-note">Check our Instagram for hours and updates.</p>
+      <div class="socials" id="socials"></div>
+    </section>
+
+    <!-- CONTACT / EVENT BOOKING -->
+    <section class="section" id="contact">
       <div class="book-wrap">
         <div class="book-intro">
-          <p class="eyebrow">Book the truck</p>
-          <h2>Tell us about <em>your event.</em></h2>
-          <p class="section-sub">Want the truck at your wedding, party or office? Answer a few questions and we’ll get back to you with availability and a quote. No payment needed to ask.</p>
+          <p class="eyebrow">Contact</p>
+          <h2>Bring S+ to your event.</h2>
+          <p class="section-sub">Wedding, party or office? Answer a few questions and we’ll get back to you with availability and a quote. No payment needed to ask.</p>
           <div class="ticket" id="ticket" aria-live="polite">
-            <div class="ticket-top"><span class="brand-mark">S<sup>+</sup></span> Event ticket</div>
+            <div class="ticket-top"><span class="ticket-mark">S<span>+</span></span> Event request</div>
             <dl>
               <dt>Event</dt><dd data-t="type">—</dd>
               <dt>Date</dt><dd data-t="date">—</dd>
@@ -84,10 +145,10 @@
 
         <form class="book-form" id="bookForm" novalidate>
           <div class="field-row">
-            <label class="field"><span>Your name *</span><input name="name" required autocomplete="name"></label>
-            <label class="field"><span>Phone *</span><input name="phone" type="tel" required autocomplete="tel"></label>
+            <label class="field"><span>Your name *</span><input id="f-name" name="name" required autocomplete="name"></label>
+            <label class="field"><span>Phone *</span><input id="f-phone" name="phone" type="tel" required autocomplete="tel"></label>
           </div>
-          <label class="field"><span>Email</span><input name="email" type="email" autocomplete="email"></label>
+          <label class="field"><span>Email</span><input id="f-email" name="email" type="email" autocomplete="email"></label>
 
           <fieldset class="field">
             <legend>Type of event *</legend>
@@ -95,63 +156,52 @@
           </fieldset>
 
           <div class="field-row">
-            <label class="field"><span>Date *</span><input name="date" type="date" required></label>
-            <label class="field"><span>Start time</span><input name="time" type="time"></label>
+            <label class="field"><span>Date *</span><input id="f-date" name="date" type="date" required></label>
+            <label class="field"><span>Start time</span><input id="f-time" name="time" type="time"></label>
           </div>
           <div class="field-row">
             <label class="field"><span>Hours of service</span>
-              <select name="hours"><option>2</option><option selected>3</option><option>4</option><option>5+</option></select>
+              <select id="f-hours" name="hours"><option>2</option><option selected>3</option><option>4</option><option>5+</option></select>
             </label>
             <label class="field"><span>Guests: <output id="guestsOut">60</output></span>
               <input name="guests" type="range" min="10" max="500" step="10" value="60" id="guests">
             </label>
           </div>
-          <label class="field"><span>Event location / address *</span><input name="location" required placeholder="Venue, street or neighborhood"></label>
-
+          <label class="field"><span>Event location / address *</span><input id="f-location" name="location" required placeholder="Venue, street or neighborhood"></label>
 
           <fieldset class="field">
             <legend>Drinks you’d like served <small>(optional)</small></legend>
-            <div class="chips chips-small" id="drinkChips"></div>
+            <div class="chips" id="drinkChips"></div>
           </fieldset>
 
-          <label class="field"><span>Anything else?</span><textarea name="notes" rows="3" placeholder="Theme, power on site, cup branding, dietary needs…"></textarea></label>
+          <label class="field"><span>Anything else?</span><textarea id="f-notes" name="notes" rows="3" placeholder="Theme, power on site, cup branding, dietary needs…"></textarea></label>
 
-          <button class="btn btn-wide" type="submit" id="submitBtn">Send booking request</button>
+          <button class="btn btn-gold btn-wide" type="submit" id="submitBtn">Send booking request</button>
           <p class="form-note" id="formNote"></p>
         </form>
       </div>
     </section>
-
-    <!-- FIND US -->
-    <section class="section section-dark" id="find">
-      <div class="section-head">
-        <p class="eyebrow">Find the truck</p>
-        <h2>We move around. <em>Follow along.</em></h2>
-        <p class="section-sub">Our location changes day to day — we post where we’re parked on our socials.</p>
-      </div>
-      <div class="socials" id="socials"></div>
-    </section>
   </main>
 
   <footer class="footer">
-    <span class="brand"><span class="brand-mark">S<sup>+</sup></span><span class="brand-word">Coffee</span></span>
-    <span id="footerInfo"></span>
-    <span>© <span id="year"></span> S+ Coffee</span>
+    <a class="logo" href="#top" aria-label="S+ Plus Coffee, back to top">
+      <span class="logo-mark" aria-hidden="true">S<span class="logo-plus">+</span><svg class="logo-leaf" viewBox="0 0 24 24"><use href="#leaf"/></svg></span>
+      <span class="logo-words" aria-hidden="true"><span class="logo-plusword">Plus</span><span class="logo-coffee">Coffee</span></span>
+    </a>
+    <p id="footerAddr"></p>
+    <p>© <span id="year"></span> S+ Plus Coffee</p>
   </footer>
 
-  <!-- 3D drink viewer -->
-  <dialog class="drink-modal" id="drinkModal">
-    <button class="modal-close" id="modalClose" aria-label="Close">×</button>
-    <div class="drink-stage"><canvas id="cupCanvas"></canvas><p class="hero-hint">Drag to turn the cup</p></div>
-    <div class="drink-info">
-      <p class="eyebrow" id="drinkCat"></p>
-      <h3 id="drinkName"></h3>
-      <p id="drinkDesc"></p>
-      <ul class="layer-legend" id="drinkLayers"></ul>
-      <p class="drink-price" id="drinkPrice"></p>
-      <button class="btn" id="drinkBook">Serve this at my event</button>
-    </div>
-  </dialog>
+  <!-- Shared leaf sprig used by the logo -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="leaf" viewBox="0 0 24 24">
+      <path d="M3.5 21.5C8 17 12 12.5 20.5 3.5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+      <path d="M8.6 16.2c-3.1-.4-4.6-2.9-4.4-5.6 2.9.2 4.6 2.6 4.4 5.6z"/>
+      <path d="M9.4 15.4c.6-3 3.2-4.3 5.8-3.8-.5 2.8-3 4.3-5.8 3.8z"/>
+      <path d="M12.8 11.6c-2.4-1.9-2.5-4.8-.9-6.9 2.2 1.7 2.5 4.6.9 6.9z"/>
+      <path d="M13.6 10.8c1.4-2.7 4.3-3.3 6.6-2.1-1.3 2.5-4.2 3.3-6.6 2.1z"/>
+    </symbol>
+  </svg>
 
   <script type="module" src="js/app.js"></script>
 </body>
