@@ -55,18 +55,27 @@ const price = (p) => (p ? esc(p) : '<span class="na" aria-label="not available">
 const MenuItem = ([name, a, b]) => `<tr><td>${esc(name)}</td><td class="p">${price(a)}</td><td class="p">${price(b)}</td></tr>`;
 const FlatList = (rows) => `<ul class="flat-list">${rows.map(([k, v]) => `<li><span>${esc(k)}</span><span>${esc(v)}</span></li>`).join("")}</ul>`;
 
-const MenuCategory = (c) => `
-  <section class="menu-cat" id="menu-${c.id}" aria-labelledby="menu-${c.id}-h">
-    <h3 id="menu-${c.id}-h">${esc(c.name)}</h3>
-    ${c.items ? `<table class="price-table">
-      <thead><tr><th scope="col"><span class="visually-hidden">Drink</span></th>${c.sizes.map((s) => `<th scope="col">${esc(s)}</th>`).join("")}</tr></thead>
-      <tbody>${c.items.map(MenuItem).join("")}</tbody></table>` : ""}
-    ${c.flat ? FlatList(c.flat) : ""}
-    ${c.choices ? `<div class="choices">
+const PriceTable = (items, sizes) => `<table class="price-table">
+  <thead><tr><th scope="col"><span class="visually-hidden">Drink</span></th>${sizes.map((z) => `<th scope="col">${esc(z)}</th>`).join("")}</tr></thead>
+  <tbody>${items.map(MenuItem).join("")}</tbody></table>`;
+
+// One menu category. Long lists split into two side-by-side tables on wide screens.
+const MenuCategory = (c) => {
+  let body = "";
+  if (c.items) {
+    if (c.items.length > 6) {
+      const half = Math.ceil(c.items.length / 2);
+      body += `<div class="split">${PriceTable(c.items.slice(0, half), c.sizes)}${PriceTable(c.items.slice(half), c.sizes)}</div>`;
+    } else body += PriceTable(c.items, c.sizes);
+  }
+  if (c.flat) body += FlatList(c.flat);
+  if (c.choices) body += `<div class="choices">
       <p class="choices-head"><span>${esc(c.choices.label)}</span><span>${esc(c.choices.extra)}</span></p>
-      <ul class="pill-list">${c.choices.list.map((f) => `<li>${esc(f)}</li>`).join("")}</ul></div>` : ""}
-    ${c.link ? `<a class="cat-link" href="${c.link.href}">${esc(c.link.text)} →</a>` : ""}
-  </section>`;
+      <ul class="pill-list">${c.choices.list.map((f) => `<li>${esc(f)}</li>`).join("")}</ul></div>`;
+  if (c.list) body += `<ul class="pill-list">${c.list.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>`;
+  if (c.link) body += `<a class="cat-link" href="${c.link.href}">${esc(c.link.text)} →</a>`;
+  return `<div class="menu-cat${c.wide ? " wide" : ""}"><h3>${esc(c.name)}${c.extra ? `<span>${esc(c.extra)}</span>` : ""}</h3>${body}</div>`;
+};
 
 // ── Signature drinks: two big alternating rows, then a staggered pair ──
 const [first, second, ...rest] = SIGNATURE;
@@ -82,9 +91,41 @@ $("#fallGrid").innerHTML = SEASONAL.items.map(SeasonalDrink).join("");
 
 // ── Full menu ────────────────────────────────────
 $("#menuNote").innerHTML = `<svg viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M12 2v20M4 6.5l16 11M20 6.5l-16 11M9.5 3.5 12 6l2.5-2.5M9.5 20.5 12 18l2.5 2.5"/></svg>${esc(MENU_NOTE)}`;
-$("#menuGrid").innerHTML = MENU.map(MenuCategory).join("");
-$("#flavors").innerHTML = `<h3>Flavors<span>${esc(FLAVORS.extra)}</span></h3>
-  <ul class="flavor-list">${FLAVORS.list.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>`;
+// Tabs: one category visible at a time keeps the menu short.
+const cat = (id) => MENU.find((c) => c.id === id);
+const matcha = cat("matcha");
+const MENU_TABS = [
+  { id: "coffee", label: "Coffee", parts: [cat("coffee")] },
+  { id: "espresso", label: "Espresso", parts: [cat("espresso")] },
+  { id: "matcha", label: "Matcha", parts: [{ ...matcha, name: "Sizes", choices: null }, { name: matcha.choices.label, extra: matcha.choices.extra, list: matcha.choices.list }] },
+  { id: "tea", label: "Tea", parts: [cat("tea")] },
+  { id: "specialty", label: "Specialty", parts: [cat("specialty"), cat("signature")] },
+  { id: "extras", label: "Milk & Flavors", parts: [cat("milk"), { name: "Flavors", extra: FLAVORS.extra, list: FLAVORS.list }] },
+];
+const tabsEl = $("#menuTabs"), panelsEl = $("#menuPanels");
+tabsEl.innerHTML = MENU_TABS.map((t, i) =>
+  `<button type="button" role="tab" id="tab-${t.id}" aria-controls="panel-${t.id}" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}">${esc(t.label)}</button>`).join("");
+panelsEl.innerHTML = MENU_TABS.map((t, i) =>
+  `<div class="menu-panel${t.parts.length > 1 ? " two" : ""}" role="tabpanel" id="panel-${t.id}" aria-labelledby="tab-${t.id}"${i ? " hidden" : ""}>${t.parts.map(MenuCategory).join("")}</div>`).join("");
+const tabs = [...tabsEl.querySelectorAll('[role="tab"]')];
+const selectTab = (tab, focus = false) => {
+  tabs.forEach((t) => {
+    const on = t === tab;
+    t.setAttribute("aria-selected", on);
+    t.tabIndex = on ? 0 : -1;
+    $("#" + t.getAttribute("aria-controls")).hidden = !on;
+  });
+  if (focus) tab.focus();
+  tab.scrollIntoView({ block: "nearest", inline: "nearest" });
+};
+tabsEl.addEventListener("click", (e) => { const t = e.target.closest('[role="tab"]'); if (t) selectTab(t); });
+tabsEl.addEventListener("keydown", (e) => {
+  const i = tabs.indexOf(document.activeElement);
+  const step = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+  if (i < 0 || !step) return;
+  e.preventDefault();
+  selectTab(tabs[(i + step + tabs.length) % tabs.length], true);
+});
 
 // ── Booking form ─────────────────────────────────
 const chip = (type, name, value, label, checked = false) =>
@@ -247,7 +288,7 @@ links.forEach((a) => { const s = document.querySelector(a.getAttribute("href"));
 
 // ── Gentle entry animation for content below the first screen ──
 if (!matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window) {
-  const targets = document.querySelectorAll(".section-head, .feature, .fall-card, .menu-cat, .flavors, .about > *, .address-block, .book-wrap > *");
+  const targets = document.querySelectorAll(".section-head, .feature, .fall-card, .menu-shell, .about > *, .address-block, .book-wrap > *");
   const io = new IntersectionObserver((entries) => {
     entries.forEach((e) => {
       if (!e.isIntersecting) return;
