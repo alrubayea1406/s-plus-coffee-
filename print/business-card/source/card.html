@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>S+ Plus Coffee Business Card</title>
+<style>
+  /* US business card: 3.5 x 2 in trim + 0.125 in bleed on every side = 3.75 x 2.25 in.
+     Keep text inside the 0.125 in safe margin (0.25 in from the bleed edge). */
+  @font-face { font-family: "Bodoni Moda"; font-weight: 400; src: url(assets/bodoni-moda-latin-400-normal.woff2) format("woff2"); }
+  @font-face { font-family: "Bodoni Moda"; font-weight: 500; src: url(assets/bodoni-moda-latin-500-normal.woff2) format("woff2"); }
+  @font-face { font-family: "Bodoni Moda"; font-style: italic; font-weight: 400; src: url(assets/bodoni-moda-latin-400-italic.woff2) format("woff2"); }
+  @font-face { font-family: "Jost"; font-weight: 300; src: url(assets/jost-latin-300-normal.woff2) format("woff2"); }
+  @font-face { font-family: "Jost"; font-weight: 400; src: url(assets/jost-latin-400-normal.woff2) format("woff2"); }
+  @font-face { font-family: "Jost"; font-weight: 500; src: url(assets/jost-latin-500-normal.woff2) format("woff2"); }
+
+  :root {
+    --black: #000;
+    --ink: #0a0807;
+    --gold: #c9a35a;
+    --gold-soft: rgba(201, 163, 90, .55);
+    --cream: #f4eee3;
+    --text: #efe8dc;
+  }
+  @page { size: 3.75in 2.25in; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #2a2622; }
+  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  .card {
+    position: relative; width: 3.75in; height: 2.25in; overflow: hidden;
+    page-break-after: always; break-after: page;
+  }
+  .card:last-child { page-break-after: auto; break-after: auto; }
+
+  /* ── FRONT: the round S+ logo on black ── */
+  .front {
+    background: var(--black);
+    display: grid; place-items: center;
+  }
+  .front .logo { width: 1.5in; height: 1.5in; display: block; }
+
+  /* ── BACK: contact details + QR ── */
+  .back { background: var(--ink); color: var(--text); }
+  .back .safe {
+    position: absolute; inset: 0.29in 0.3in 0.27in 0.32in;
+    display: grid; grid-template-columns: 1fr auto; column-gap: 0.22in; align-items: center;
+  }
+  .brand { display: flex; align-items: center; gap: 0.1in; }
+  .brand img { height: 0.5in; width: auto; display: block; }
+  .brand-name { font: 400 17pt/1 "Bodoni Moda", serif; letter-spacing: .005em; color: #fff; white-space: nowrap; }
+  .brand-name span { color: var(--gold); font-family: "Jost", sans-serif; font-weight: 300; font-size: .62em; vertical-align: .62em; margin-left: .02em; }
+  .tagline {
+    margin-top: 0.085in; font: 500 5.6pt/1 "Jost", sans-serif; letter-spacing: .24em; white-space: nowrap; text-transform: uppercase; color: var(--gold);
+  }
+  .rule { width: 0.55in; height: 0; border-top: 0.5pt solid var(--gold-soft); margin: 0.13in 0 0.12in; }
+  .contact { list-style: none; display: grid; gap: 0.075in; }
+  .contact li { display: flex; align-items: center; gap: 0.07in; font: 400 7.4pt/1 "Jost", sans-serif; letter-spacing: .02em; color: var(--text); white-space: nowrap; }
+  .contact svg { width: 0.115in; height: 0.115in; flex: none; fill: none; stroke: var(--gold); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+
+  .qr { display: flex; flex-direction: column; align-items: center; gap: 0.06in; }
+  .qr-tile { background: var(--cream); padding: 0.065in; border-radius: 0.05in; }
+  .qr-tile img { width: 0.86in; height: 0.86in; display: block; image-rendering: pixelated; }
+  .qr-cap { font: 500 5pt/1 "Jost", sans-serif; letter-spacing: .28em; margin-right: -.28em; text-transform: uppercase; color: var(--gold); }
+
+</style>
+</head>
+<body>
+  <!-- Page 1: front -->
+  <section class="card front">
+    <img class="logo" src="assets/logo-round.png" alt="S+ Plus Coffee">
+  </section>
+
+  <!-- Page 2: back -->
+  <section class="card back">
+    <div class="safe">
+      <div class="info">
+        <p class="brand-name">S<span>+</span> Plus Coffee</p>
+        <p class="tagline">Specialty Coffee · Good Vibes</p>
+        <div class="rule"></div>
+        <ul class="contact">
+          <li>
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9M12 3C9.4 5.6 8.2 8.6 8.2 12s1.2 6.4 3.8 9"/></svg>
+            spluscoffee.com
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="m3.5 7 8.5 6.2L20.5 7"/></svg>
+            spluscoffee2026@gmail.com
+          </li>
+        </ul>
+      </div>
+      <div class="qr">
+        <div class="qr-tile"><img src="assets/qr.svg" alt="QR code for spluscoffee.com"></div>
+        <p class="qr-cap">Scan for menu</p>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
